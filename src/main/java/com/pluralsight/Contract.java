@@ -15,20 +15,36 @@ public abstract class Contract {
         this.vehicleSold = vehicleSold;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDate() {
         return date;
     }
 
-    public String getName() {
-        return name;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public double getVehicleSold() {
         return vehicleSold;
+    }
+
+    public void setVehicleSold(double vehicleSold) {
+        this.vehicleSold = vehicleSold;
     }
 
     public abstract double getTotalPrice();
