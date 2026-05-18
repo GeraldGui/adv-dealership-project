@@ -1,13 +1,14 @@
 package com.pluralsight;
 
+import java.time.LocalDate;
+
 public class SalesContract extends Contract {
-    private double salesTaxAmount = .95;
-    private double monthlyPayment;
+    private double saleTax;
     private int recordingFee = 100;
     private int processingFee;
     private boolean goingToFinance;
 
-    public SalesContract(String name, String date, String email, double vehicleSold) {
+    public SalesContract(String name, String date, String email, Vehicle vehicleSold) {
         super(name, date, email, vehicleSold);
     }
 
@@ -19,7 +20,21 @@ public class SalesContract extends Contract {
         this.recordingFee = recordingFee;
     }
 
+    public double getSaleTax() {
+        saleTax = getVehicleSold().getPrice() * 0.05;
+        return saleTax;
+    }
+
+    public void setSaleTax(double saleTax) {
+        this.saleTax = saleTax;
+    }
+
     public int getProcessingFee() {
+        if (vehicleSold.getPrice() < 10000) {
+            processingFee = 295;
+        } else {
+            processingFee = 495;
+        }
         return processingFee;
     }
 
@@ -37,7 +52,7 @@ public class SalesContract extends Contract {
 
     @Override
     public double getTotalPrice() {
-        return getVehicleSold() + salesTaxAmount + recordingFee + processingFee;
+        return getVehicleSold().getPrice() + getSaleTax() + recordingFee + getProcessingFee();
     }
 
     @Override
@@ -45,7 +60,7 @@ public class SalesContract extends Contract {
         int numberOfPayments = 0;
         double interestRate = 0;
         if (goingToFinance) {
-            if (getVehicleSold() >= 10000) {
+            if (getVehicleSold().getPrice() >= 10000) {
                 numberOfPayments = 48;
                 interestRate = 4.25 / 1200;
             } else {

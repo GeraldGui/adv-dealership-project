@@ -1,12 +1,15 @@
 package com.pluralsight;
 
+import java.time.LocalDate;
+
 public class LeaseContract extends Contract {
     private double endingValue;
     private double leaseFee;
-    private double monthlyPayemnt;
 
-    public LeaseContract(String name, String date, String email, double vehicleSold) {
+    public LeaseContract(String name, String date, String email, Vehicle vehicleSold) {
         super(name, date, email, vehicleSold);
+        endingValue = vehicleSold.getPrice() * 0.50;
+        leaseFee = vehicleSold.getPrice() * 0.07;
     }
 
     public double getEndingValue() {
@@ -27,7 +30,7 @@ public class LeaseContract extends Contract {
 
     @Override
     public double getTotalPrice() {
-        return (getVehicleSold() - endingValue) + leaseFee;
+        return (getVehicleSold().getPrice() - getEndingValue()) + getLeaseFee();
     }
 
     @Override

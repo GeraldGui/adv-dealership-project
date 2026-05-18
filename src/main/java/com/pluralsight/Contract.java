@@ -1,14 +1,17 @@
 package com.pluralsight;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public abstract class Contract {
     String name = "";
-    String date = "";
+    String date;
     String email = "";
-    double vehicleSold = 0;
+    Vehicle vehicleSold;
     double totalPrice = 0;
     double monthlyPayment = 0;
 
-    public Contract(String name, String date, String email, double vehicleSold) {
+    public Contract(String name, String date, String email, Vehicle vehicleSold) {
         this.name = name;
         this.date = date;
         this.email = email;
@@ -39,11 +42,11 @@ public abstract class Contract {
         this.email = email;
     }
 
-    public double getVehicleSold() {
+    public Vehicle getVehicleSold() {
         return vehicleSold;
     }
 
-    public void setVehicleSold(double vehicleSold) {
+    public void setVehicleSold(Vehicle vehicleSold) {
         this.vehicleSold = vehicleSold;
     }
 
