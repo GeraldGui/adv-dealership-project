@@ -223,7 +223,7 @@ public class UserInterface {
             ContractDataManager contractDataManager = new ContractDataManager();
 
             StringBuilder sb = new StringBuilder();
-            sb.append("\n========== Sales Contract ==========\n");
+            System.out.println("\n========== Sales Contract ==========\n");
             sb.append("Date: ").append(date).append("\n");
             sb.append("Name: ").append(name).append("\n");
             sb.append("Email: ").append(email).append("\n");
@@ -234,15 +234,29 @@ public class UserInterface {
             sb.append("Recording Fee: $").append(salesContract.getRecordingFee()).append("\n");
             sb.append("Processing Fee: $").append(salesContract.getProcessingFee()).append("\n");
             sb.append("Total Price: $").append(String.format("%.2f", salesContract.getTotalPrice())).append("\n");
-            sb.append("Monthly Payment: $").append(String.format("%.2f", salesContract.getMonthlyPayment())).append("\n");
-            sb.append("====================================");
             System.out.println(sb);
+            System.out.println("====================================");
+
+            System.out.print("Would you like to finance? (yes/no): ");
+            String financeAnswer = scanner.nextLine();
+            salesContract.setGoingToFinance(financeAnswer.equalsIgnoreCase("yes"));
+
+
+            String sb2 = "\n========== Final Sales Contract ==========\n\n" +
+                    sb +
+                    "Monthly Payment: $" + String.format("%.2f", salesContract.getMonthlyPayment()) + "\n" +
+                    "\n====================================";
+            System.out.println(sb2);
 
             System.out.print("Confirm contract? (yes/no): ");
             String confirm = scanner.nextLine();
             if (!confirm.equalsIgnoreCase("yes")) {
                 System.out.println("Contract cancelled.");
+                salesContract.setGoingToFinance(false);
+                contractDataManager.saveContract(salesContract);
                 return;
+            } else {
+                salesContract.setGoingToFinance(true);
             }
 
             contractDataManager.saveContract(salesContract);
@@ -256,6 +270,16 @@ public class UserInterface {
             scanner.nextLine();
 
             Vehicle vehicles =  dealership.getAllVehicles().stream().filter(vehicle -> vehicle.getVin() == vinLease).findFirst().orElse(null);
+
+            if (vehicles == null) {
+                System.out.println("Vehicle not found.");
+                return;
+            }
+
+            if (vehicles.getYear() < 2023) {
+                System.out.println("Sorry, you cannot lease a vehicle over 3 years old.");
+                return;
+            }
 
             System.out.print("Provide your name: ");
             String name = scanner.nextLine();
