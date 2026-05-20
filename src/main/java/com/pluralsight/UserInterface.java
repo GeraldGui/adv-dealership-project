@@ -26,6 +26,7 @@ public class UserInterface {
             System.out.println("7. Get all vehicles");
             System.out.println("8. Add vehicle");
             System.out.println("9. Remove vehicle");
+            System.out.println("10. Sign a Contract for the Vehicle!");
             System.out.println("99. Quit");
 
             System.out.print("Enter your choice: ");
@@ -58,6 +59,9 @@ public class UserInterface {
                     break;
                 case "9":
                     processRemoveVehicleRequest();
+                    break;
+                case "10":
+                    signingContract(scanner);
                     break;
                 case "99":
                     quit = true;
@@ -194,4 +198,82 @@ public class UserInterface {
         }
     }
 
+    public void signingContract(Scanner scanner) {
+        System.out.print("Would you like a Sale or Lease Contract? ");
+        String typeOfContract = scanner.nextLine();
+
+        if (typeOfContract.equalsIgnoreCase("sale")) {
+            System.out.print("Provide the vin for the car you want to sale: ");
+            int vinSale = scanner.nextInt();
+            scanner.nextLine();
+
+            Vehicle vehicles = dealership.getAllVehicles().stream().filter(vehicle -> vehicle.getVin() == vinSale).findFirst().orElse(null);
+
+            System.out.print("Provide your name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Provide the date: ");
+            String date = scanner.nextLine();
+
+            System.out.print("Provide your email: ");
+            String email = scanner.nextLine();
+
+            SalesContract salesContract = new SalesContract(name, date, email, vehicles);
+
+            ContractDataManager contractDataManager = new ContractDataManager();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n========== Sales Contract ==========\n");
+            sb.append("Date: ").append(date).append("\n");
+            sb.append("Name: ").append(name).append("\n");
+            sb.append("Email: ").append(email).append("\n");
+            sb.append("Vehicle: ").append(vehicles.getYear()).append(" ").append(vehicles.getMake()).append(" ").append(vehicles.getModel()).append("\n");
+            sb.append("VIN: ").append(vehicles.getVin()).append("\n");
+            sb.append("Price: $").append(String.format("%.2f", vehicles.getPrice())).append("\n");
+            sb.append("Sale Tax: $").append(String.format("%.2f", salesContract.getSaleTax())).append("\n");
+            sb.append("Recording Fee: $").append(salesContract.getRecordingFee()).append("\n");
+            sb.append("Processing Fee: $").append(salesContract.getProcessingFee()).append("\n");
+            sb.append("Total Price: $").append(String.format("%.2f", salesContract.getTotalPrice())).append("\n");
+            sb.append("Monthly Payment: $").append(String.format("%.2f", salesContract.getMonthlyPayment())).append("\n");
+            sb.append("====================================");
+            System.out.println(sb);
+
+            System.out.print("Confirm contract? (yes/no): ");
+            String confirm = scanner.nextLine();
+            if (!confirm.equalsIgnoreCase("yes")) {
+                System.out.println("Contract cancelled.");
+                return;
+            }
+
+            contractDataManager.saveContract(salesContract);
+            dealership.removeVehicle(vehicles);
+            DealershipFileManager manager = new DealershipFileManager();
+            manager.saveDealership(dealership);
+
+        } else if (typeOfContract.equalsIgnoreCase("lease")) {
+            System.out.print("Provide the vin for the car you want to lease: ");
+            int vinLease = scanner.nextInt();
+            scanner.nextLine();
+
+            Vehicle vehicles =  dealership.getAllVehicles().stream().filter(vehicle -> vehicle.getVin() == vinLease).findFirst().orElse(null);
+
+            System.out.print("Provide your name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Provide the date: ");
+            String date = scanner.nextLine();
+
+            System.out.print("Provide your email: ");
+            String email = scanner.nextLine();
+
+            LeaseContract leaseContract = new LeaseContract(name, date, email, vehicles);
+
+            ContractDataManager contractDataManager = new ContractDataManager();
+
+            contractDataManager.saveContract(leaseContract);
+            dealership.removeVehicle(vehicles);
+            DealershipFileManager manager = new DealershipFileManager();
+            manager.saveDealership(dealership);
+        }
+    }
 }
